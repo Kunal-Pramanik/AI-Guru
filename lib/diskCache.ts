@@ -6,7 +6,8 @@ import path from "node:path";
 // Small JSON cache on disk (.ai-guru-cache/<bucket>/<key>.json).
 // Same textbook + same settings → same lesson, with zero API requests.
 
-const ROOT = path.join(process.cwd(), ".ai-guru-cache");
+// On Vercel only /tmp is writable (temporary, per server instance). Locally we keep a real folder.
+const ROOT = process.env.VERCEL ? "/tmp/ai-guru-cache" : path.join(process.cwd(), ".ai-guru-cache");
 
 export const hashOf = (...parts: (string | Buffer)[]) => {
   const h = createHash("sha256");
