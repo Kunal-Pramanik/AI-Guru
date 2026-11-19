@@ -16,7 +16,7 @@ import { FriendlyError, getClient, isDailyQuota, tempFor, toFriendly, withModel 
  * Every picture is cached on disk (.ai-guru-cache/) so each one is generated only once.
  */
 
-export const CACHE_DIR = path.join(process.cwd(), ".ai-guru-cache", "illustrations");
+export const CACHE_DIR = process.env.VERCEL ? "/tmp/ai-guru-cache/illustrations" : path.join(process.cwd(), ".ai-guru-cache", "illustrations");
 
 let imageModelBlockedUntil = 0; // after a billing/quota error we stop trying the image model for a while
 
