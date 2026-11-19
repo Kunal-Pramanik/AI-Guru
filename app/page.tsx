@@ -524,10 +524,10 @@ function CameraModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black">
-      <div className="relative flex-1">
+    <div className="fixed inset-0 z-50 flex h-[100dvh] flex-col bg-black">
+      <div className="relative min-h-0 flex-1 overflow-hidden">
         {!failed ? (
-          <video ref={videoRef} playsInline muted className="h-full w-full object-contain" />
+          <video ref={videoRef} playsInline muted className="absolute inset-0 h-full w-full object-contain" />
         ) : (
           <div className="grid h-full place-items-center p-6 text-center text-2xl font-bold text-white">
             <div className="flex flex-col items-center gap-4">
@@ -543,7 +543,7 @@ function CameraModal({
         {flash && <div className="absolute inset-0 bg-white/80" />}
         {count > 0 && <div className="absolute left-4 top-4 rounded-full bg-leaf px-4 py-2 text-xl font-extrabold text-white">✅ {count}</div>}
       </div>
-      <div className="flex items-center justify-center gap-6 bg-black/90 p-5">
+      <div className="flex shrink-0 items-center justify-center gap-6 bg-black/90 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <button onClick={onClose} className="btn3d bg-white px-6 text-xl text-ink">
           ✕ {labels.close}
         </button>
