@@ -9,6 +9,8 @@ import { LANGS, STORAGE_KEYS, type Lang, type Lesson, type Student } from "@/lib
 
 const MAX_FILES = 8;
 const MAX_SIZE = 15 * 1024 * 1024;
+// Total upload limit. On Vercel set NEXT_PUBLIC_MAX_TOTAL_MB=4 (Vercel rejects requests over 4.5 MB).
+const MAX_TOTAL_MB = Number(process.env.NEXT_PUBLIC_MAX_TOTAL_MB) || 120;
 const AVATARS = ["🐯", "🐼", "🦊", "🐰", "🐸", "🦁", "🐨", "🐵"];
 const PREFS: Student["preference"][] = ["stories", "pictures", "games", "listening"];
 const PREF_ICON: Record<Student["preference"], string> = { stories: "📖", pictures: "🖼️", games: "🎲", listening: "🎧" };
@@ -73,6 +75,11 @@ export default function Home() {
           }
           if (f.size > MAX_SIZE) {
             setToast(`${tr.tooBig} ${f.name}`);
+            continue;
+          }
+          const total = next.reduce((n, p) => n + p.file.size, 0) + f.size;
+          if (total > MAX_TOTAL_MB * 1024 * 1024) {
+            setToast(`${tr.tooBig} ${f.name} (max ${MAX_TOTAL_MB} MB)`);
             continue;
           }
           next.push({ id: `${f.name}-${f.size}-${Math.random()}`, file: f, url: isImg ? URL.createObjectURL(f) : null });
@@ -343,8 +350,7 @@ export default function Home() {
                   <span className="text-lg">{tr.useCamera}</span>
                 </button>
               </div>
-              <p className="mt-3 text-center text-sm font-semibold text-ink/50">{tr.filesLimit}</p>
-
+              <p className="mt-3 text-center text-sm font-semibold text-ink/50">{MAX_TOTAL_MB < 15 ? `PDF / 📷 · max ${MAX_TOTAL_MB} MB` : tr.filesLimit}</p>
               {files.length > 0 && (
                 <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {files.map((f, i) => (
