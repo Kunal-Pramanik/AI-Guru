@@ -55,7 +55,11 @@ export function useIllustrations(lesson: Lesson | null) {
             const data = await res.json().catch(() => ({}));
             if (!res.ok || !data.url) throw new Error(data.error || "failed");
             urls[s.order] = data.url;
-            sessionStorage.setItem(KEY, JSON.stringify({ chapter: id, urls }));
+            try {
+              sessionStorage.setItem(KEY, JSON.stringify({ chapter: id, urls }));
+            } catch {
+              /* storage full – picture still shows, just not remembered */
+            }
             if (!cancelled) setPics((p) => ({ ...p, [s.order]: { status: "ready", url: data.url } }));
           } catch (e) {
             console.warn(`[pictures] part ${s.order} not drawn yet (round ${round}):`, (e as Error).message);
